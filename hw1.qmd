@@ -1,0 +1,277 @@
+---
+title: "Homework 1"
+format: 
+  html:
+    self-contained: true
+author: 
+- teammate 1
+- teammate 2
+- teammate 3
+- teammate 4
+---
+
+## Task 1 - Implement fizzbuzz
+
+### Write up
+
+<!-- 
+In this section include your write up for this task - do not include it within these html comment tags. 
+
+The write up must appear in the rendered document.
+-->
+
+### Function
+
+```{r fizzbuzz}
+fizzbuzz = function(input) {
+  if(!is.numeric(input)){
+   stop("Input must be numeric") 
+  }else if(any(input<0)){
+    stop("Input must be positive")
+  }else if(any(input!=round(input))){
+    stop("Input must be int")
+  }
+  output <- list()
+  for(element in input){
+    if(element%%3==0 & element%%5==0){
+      element = "FizzBuzz"
+    }else if(element%%3 == 0){
+      element = "Fizz"
+    }else if(element%%5 == 0){
+      element = "Buzz"
+    }
+    output <- c(output, as.character(element))
+  }
+  return(output)
+}
+```
+
+### Testing
+
+#### Valid Inputs
+
+```{r good_inputs}
+#| error: true
+stopifnot( fizzbuzz(1)  == "1"       )
+stopifnot( fizzbuzz(3)  == "Fizz"    )
+stopifnot( fizzbuzz(5)  == "Buzz"    )
+stopifnot( fizzbuzz(15) == "FizzBuzz")
+
+stopifnot(all( fizzbuzz(1:5) == c("1", "2", "Fizz", "4", "Buzz") ))
+
+stopifnot(all( fizzbuzz(9:15) == c("Fizz", "Buzz", "11", "Fizz", "13", "14", "FizzBuzz") ))
+stopifnot(all( fizzbuzz(15:9) == c("FizzBuzz", "14", "13", "Fizz", "11", "Buzz", "Fizz") ))
+```
+
+
+#### Bad Inputs
+
+```{r throws_error}
+# Testing helper function, returns TRUE if expr throws an error FALSE otherwise.
+throws_error = function(expr) {
+  inherits(try(expr, silent = TRUE), "try-error")
+}
+```
+
+```{r bad_inputs}
+#| error: true
+stopifnot(throws_error( fizzbuzz(-1) ))
+stopifnot(throws_error( fizzbuzz(-3) ))
+stopifnot(throws_error( fizzbuzz(-5) ))
+
+stopifnot(throws_error( fizzbuzz(TRUE) ))
+stopifnot(throws_error( fizzbuzz(FALSE) ))
+
+stopifnot(throws_error( fizzbuzz(Inf) ))
+stopifnot(throws_error( fizzbuzz(-Inf) ))
+stopifnot(throws_error( fizzbuzz(NaN) ))
+
+stopifnot(throws_error( fizzbuzz("A") ))
+stopifnot(throws_error( fizzbuzz(1.5) ))
+stopifnot(throws_error( fizzbuzz(1i) ))
+stopifnot(throws_error( fizzbuzz(4i) ))
+
+stopifnot(throws_error( fizzbuzz() ))
+stopifnot(throws_error( fizzbuzz(NULL) ))
+stopifnot(throws_error( fizzbuzz(NA) ))
+stopifnot(throws_error( fizzbuzz(c(1,NA)) ))
+stopifnot(throws_error( fizzbuzz(c(1L,NA)) ))
+stopifnot(throws_error( fizzbuzz(c(NA,1)) ))
+stopifnot(throws_error( fizzbuzz(c(NA,1L)) ))
+```
+
+
+
+
+## Task 2 - Re-Implement fizzbuzz
+
+### Write up
+
+<!-- 
+In this section include your write up for this task - do not include it within theses html comment tags.
+
+The write up must appear in the rendered document.
+-->
+
+### Function
+
+```{r fizzbuzz_s3}
+fizzbuzz_s3 <- function(input) {
+  UseMethod("fizzbuzz_s3")
+}
+
+fizzbuzz_s3.negative <- function(input){
+  stop("input must be positive")
+}
+fizzbuzz_s3.float <- function(input){
+  stop("Input must be int")
+}
+fizzbuzz_s3.numeric <- function(input) {
+  if(any(input<0)){
+    return(fizzbuzz_s3.negative(input))
+  }else if(any(input!=round(input))){
+    return(fizzbuzz_s3.float(input))
+  }
+  output <- list()
+  for(element in input){
+    if(element%%3==0 & element%%5==0){
+      element = "FizzBuzz"
+    }else if(element%%3 == 0){
+      element = "Fizz"
+    }else if(element%%5 == 0){
+      element = "Buzz"
+    }
+    output <- c(output, as.character(element))
+  }
+  return(output)
+}
+fizzbuzz_s3.default <- function(input) {
+  stop("Unsupported input type. Input must be numeric.")
+}
+```
+
+
+### Testing
+
+#### Valid Inputs
+
+```{r good_inputs_s3}
+#| error: true
+stopifnot( fizzbuzz_s3(1)  == "1"       )
+stopifnot( fizzbuzz_s3(3)  == "Fizz"    )
+stopifnot( fizzbuzz_s3(5)  == "Buzz"    )
+stopifnot( fizzbuzz_s3(15) == "FizzBuzz")
+
+stopifnot(all( fizzbuzz_s3(1:5) == c("1", "2", "Fizz", "4", "Buzz") ))
+
+stopifnot(all( fizzbuzz_s3(9:15) == c("Fizz", "Buzz", "11", "Fizz", "13", "14", "FizzBuzz") ))
+stopifnot(all( fizzbuzz_s3(15:9) == c("FizzBuzz", "14", "13", "Fizz", "11", "Buzz", "Fizz") ))
+```
+
+
+#### Bad Inputs
+
+```{r bad_inputs_s3}
+#| error: true
+stopifnot(throws_error( fizzbuzz_s3(-1) ))
+stopifnot(throws_error( fizzbuzz_s3(-3) ))
+stopifnot(throws_error( fizzbuzz_s3(-5) ))
+
+stopifnot(throws_error( fizzbuzz_s3(TRUE) ))
+stopifnot(throws_error( fizzbuzz_s3(FALSE) ))
+
+stopifnot(throws_error( fizzbuzz_s3(Inf) ))
+stopifnot(throws_error( fizzbuzz_s3(-Inf) ))
+stopifnot(throws_error( fizzbuzz_s3(NaN) ))
+
+stopifnot(throws_error( fizzbuzz_s3("A") ))
+stopifnot(throws_error( fizzbuzz_s3(1.5) ))
+stopifnot(throws_error( fizzbuzz_s3(1i) ))
+stopifnot(throws_error( fizzbuzz_s3(4i) ))
+
+stopifnot(throws_error( fizzbuzz_s3() ))
+stopifnot(throws_error( fizzbuzz_s3(NULL) ))
+stopifnot(throws_error( fizzbuzz_s3(NA) ))
+stopifnot(throws_error( fizzbuzz_s3(c(1,NA)) ))
+stopifnot(throws_error( fizzbuzz_s3(c(1L,NA)) ))
+stopifnot(throws_error( fizzbuzz_s3(c(NA,1)) ))
+stopifnot(throws_error( fizzbuzz_s3(c(NA,1L)) ))
+```
+
+
+## Task 3 - Printing Secrets
+
+### Write up
+
+<!-- 
+In this section include your write up for this task - do not include it within theses html comment tags.
+
+The write up must appear in the rendered document.
+-->
+
+### Function
+
+```{r secret}
+# use this function to create a secret object
+secret = function(x) {
+  structure(
+    x, class="secret"
+  )
+}
+```
+
+```{r print_secret}
+print.secret = function(x, ...) {
+  print(x)
+}
+```
+
+
+### Testing
+
+```{r}
+# helper function for creating, printing, and capturing output of a secret
+# returns a character vector of the output
+print_secret = function(x) {
+  twimws( gsub('s+',' ',    capture.output(
+      print(secret(x))
+    )
+  ) )
+}
+```
+
+#### Valid Inputs
+
+```{r good_inputs_secret}
+#| error: true
+
+stopifnot( print_secret( 1:5 )                      == '[1] * * * * *'            )
+stopifnot( print_secret( -(1:5) )                   == '[1] -* -* -* -* -*'       )
+stopifnot( print_secret( c(123, 456, 789) )         == '[1] *** *** ***'          )
+stopifnot( print_secret( c(123.456, -789) )         == '[1] ******* -***'         )
+stopifnot( print_secret( c(-123.456, 789) )         == '[1] -******* ***'         )
+stopifnot( print_secret( c(123+1234i, -123+1234i) ) == '[1] ***+****i -***+****i' )
+stopifnot( print_secret( c(123-1234i, -123-1234i) ) == '[1] ***-****i -***-****i')
+stopifnot( print_secret( c(TRUE, FALSE) )           == '[1] ***** *****'          )
+stopifnot( print_secret( c(FALSE, TRUE) )           == '[1] ***** *****'          )
+stopifnot( print_secret( c("abc", "def") )          == '[1] "***" "***"'          )
+```
+
+
+#### Bad Inputs
+
+```{r bad_inputs_secret}
+#| error: true
+
+stopifnot( throws_error( 
+  print_secret( list() ) 
+) )
+
+stopifnot( throws_error( 
+  print_secret( raw() ) 
+) )
+
+stopifnot( throws_error( 
+  print_secret( function() {} ) 
+) )
+```
