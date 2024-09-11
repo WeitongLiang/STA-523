@@ -214,10 +214,10 @@ The write up must appear in the rendered document.
 ```{r secret}
 # use this function to create a secret object
 secret = function(x) {
-  structure(
-    x, class="secret"
-  )
+  structure(x, class="secret")
 }
+
+secret.deflaut
 ```
 
 ```{r print_secret}
@@ -236,7 +236,7 @@ print_secret = function(x) {
   twimws( gsub('s+',' ',    capture.output(
       print(secret(x))
     )
-  ) )
+  ))
 }
 ```
 
